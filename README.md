@@ -61,6 +61,27 @@ print((-a).to_str())      # "T11"  (-5 in balanced ternary)
 # T-notation input supports lowercase t
 c = BalancedTernary.from_str("1t0T")
 print(c.to_int())  # 23
+
+# Ordering: compare and sort by integer value
+x = BalancedTernary.from_int(3)
+y = BalancedTernary.from_int(7)
+print(x < y)   # True
+print(x >= y)  # False
+values = [BalancedTernary.from_int(n) for n in [5, -2, 0, 3]]
+print([v.to_int() for v in sorted(values)])  # [-2, 0, 3, 5]
+
+# Floored division and modulo (Python semantics: remainder has sign of divisor)
+d = BalancedTernary.from_int(7)
+e = BalancedTernary.from_int(2)
+print((d // e).to_int())   # 3
+print((d % e).to_int())    # 1
+q, r = divmod(d, e)
+print(q.to_int(), r.to_int())  # 3 1
+
+# Negative divisor: remainder is non-positive (Python floored convention)
+f = BalancedTernary.from_int(-2)
+print((d // f).to_int())   # -4
+print((d % f).to_int())    # -1
 ```
 
 ## API
@@ -91,11 +112,21 @@ zeros except for the value zero itself).
 | `+`      | Addition                        |
 | `-`      | Subtraction                     |
 | `*`      | Multiplication                  |
+| `//`     | Floored integer division        |
+| `%`      | Floored modulo (remainder sign matches divisor) |
+| `divmod()` | Returns `(quotient, remainder)` as `BalancedTernary` values |
 | unary `-`| Negation (exact, no carry needed) |
 | `==`     | Equality                        |
+| `<`, `<=`, `>`, `>=` | Ordering by integer value (sortable) |
 | `hash()` | Hashable (usable as dict key)   |
 | `repr()` | `BalancedTernary.from_str('...')` |
 | `str()`  | T-notation string               |
+
+**Division sign convention:** `//` and `%` follow Python's floored division: the
+remainder always has the same sign as the divisor. For example, `(-7) // 2 == -4`
+and `(-7) % 2 == 1`. `__truediv__` (`/`) is intentionally omitted -- `BalancedTernary`
+is an exact integer type and true division would break the exact-arithmetic contract
+for most operand pairs.
 
 ## Digit-level carry logic
 

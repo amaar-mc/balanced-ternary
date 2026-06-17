@@ -242,3 +242,337 @@ def test_sub_non_bt_returns_not_implemented() -> None:
     bt = BalancedTernary.from_int(1)
     result = bt.__sub__(1.0)
     assert result is NotImplemented
+
+
+# ---------------------------------------------------------------------------
+# Ordering: __lt__, __le__, __gt__, __ge__
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "a,b",
+    [
+        (-5, -3),
+        (-3, 0),
+        (0, 1),
+        (1, 7),
+        (-1000, 1000),
+        (0, 0),
+        (3, 3),
+        (-7, -7),
+        (-1, 1),
+        (9, 10),
+    ],
+)
+def test_lt_parametrized(a: int, b: int) -> None:
+    """BalancedTernary(a) < BalancedTernary(b) matches a < b."""
+    assert (BalancedTernary.from_int(a) < BalancedTernary.from_int(b)) == (a < b)
+
+
+@pytest.mark.parametrize(
+    "a,b",
+    [
+        (-5, -3),
+        (-3, 0),
+        (0, 1),
+        (1, 7),
+        (-1000, 1000),
+        (0, 0),
+        (3, 3),
+        (-7, -7),
+        (-1, 1),
+        (9, 10),
+    ],
+)
+def test_le_parametrized(a: int, b: int) -> None:
+    """BalancedTernary(a) <= BalancedTernary(b) matches a <= b."""
+    assert (BalancedTernary.from_int(a) <= BalancedTernary.from_int(b)) == (a <= b)
+
+
+@pytest.mark.parametrize(
+    "a,b",
+    [
+        (-5, -3),
+        (-3, 0),
+        (0, 1),
+        (1, 7),
+        (-1000, 1000),
+        (0, 0),
+        (3, 3),
+        (-7, -7),
+        (-1, 1),
+        (9, 10),
+    ],
+)
+def test_gt_parametrized(a: int, b: int) -> None:
+    """BalancedTernary(a) > BalancedTernary(b) matches a > b."""
+    assert (BalancedTernary.from_int(a) > BalancedTernary.from_int(b)) == (a > b)
+
+
+@pytest.mark.parametrize(
+    "a,b",
+    [
+        (-5, -3),
+        (-3, 0),
+        (0, 1),
+        (1, 7),
+        (-1000, 1000),
+        (0, 0),
+        (3, 3),
+        (-7, -7),
+        (-1, 1),
+        (9, 10),
+    ],
+)
+def test_ge_parametrized(a: int, b: int) -> None:
+    """BalancedTernary(a) >= BalancedTernary(b) matches a >= b."""
+    assert (BalancedTernary.from_int(a) >= BalancedTernary.from_int(b)) == (a >= b)
+
+
+def test_sorting_matches_int() -> None:
+    """Sorting a list of BalancedTernary matches sorting their int values."""
+    values = [-7, 0, 5, -1, 3, -100, 100, 1, -1]
+    bt_list = [BalancedTernary.from_int(v) for v in values]
+    sorted_bt = sorted(bt_list)
+    sorted_ints = sorted(values)
+    assert [x.to_int() for x in sorted_bt] == sorted_ints
+
+
+def test_sorting_empty_and_single() -> None:
+    """Sorting zero or one BalancedTernary works."""
+    assert sorted([]) == []
+    one = [BalancedTernary.from_int(42)]
+    assert sorted(one) == one
+
+
+def test_ordering_consistency_with_eq() -> None:
+    """Ordering is consistent: a == b implies not (a < b) and not (a > b)."""
+    for n in [-10, -1, 0, 1, 10]:
+        a = BalancedTernary.from_int(n)
+        b = BalancedTernary.from_int(n)
+        assert a == b
+        assert not (a < b)
+        assert not (a > b)
+        assert a <= b
+        assert a >= b
+
+
+def test_lt_non_bt_returns_not_implemented() -> None:
+    """__lt__ with non-BalancedTernary returns NotImplemented."""
+    bt = BalancedTernary.from_int(1)
+    assert bt.__lt__(42) is NotImplemented
+
+
+def test_le_non_bt_returns_not_implemented() -> None:
+    """__le__ with non-BalancedTernary returns NotImplemented."""
+    bt = BalancedTernary.from_int(1)
+    assert bt.__le__(42) is NotImplemented
+
+
+def test_gt_non_bt_returns_not_implemented() -> None:
+    """__gt__ with non-BalancedTernary returns NotImplemented."""
+    bt = BalancedTernary.from_int(1)
+    assert bt.__gt__(42) is NotImplemented
+
+
+def test_ge_non_bt_returns_not_implemented() -> None:
+    """__ge__ with non-BalancedTernary returns NotImplemented."""
+    bt = BalancedTernary.from_int(1)
+    assert bt.__ge__(42) is NotImplemented
+
+
+@given(a=_ints, b=_ints)
+@settings(max_examples=500)
+def test_lt_oracle(a: int, b: int) -> None:
+    """BalancedTernary comparison matches int comparison."""
+    assert (BalancedTernary.from_int(a) < BalancedTernary.from_int(b)) == (a < b)
+
+
+@given(a=_ints, b=_ints)
+@settings(max_examples=300)
+def test_ordering_total(a: int, b: int) -> None:
+    """Total ordering: exactly one of a<b, a==b, a>b holds."""
+    ba = BalancedTernary.from_int(a)
+    bb = BalancedTernary.from_int(b)
+    lt = ba < bb
+    eq = ba == bb
+    gt = ba > bb
+    assert (lt, eq, gt).count(True) == 1
+
+
+# ---------------------------------------------------------------------------
+# Division: __floordiv__, __mod__, __divmod__
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    "a,b",
+    [
+        (7, 2),
+        (7, -2),
+        (-7, 2),
+        (-7, -2),
+        (0, 5),
+        (0, -5),
+        (9, 3),
+        (-9, 3),
+        (9, -3),
+        (-9, -3),
+        (1, 1),
+        (-1, 1),
+        (1, -1),
+        (-1, -1),
+        (10, 3),
+        (-10, 3),
+        (10, -3),
+        (-10, -3),
+        (100, 7),
+        (-100, 7),
+        (100, -7),
+        (-100, -7),
+    ],
+)
+def test_floordiv_parametrized(a: int, b: int) -> None:
+    """BalancedTernary(a) // BalancedTernary(b) matches a // b."""
+    result = BalancedTernary.from_int(a) // BalancedTernary.from_int(b)
+    assert result.to_int() == a // b
+
+
+@pytest.mark.parametrize(
+    "a,b",
+    [
+        (7, 2),
+        (7, -2),
+        (-7, 2),
+        (-7, -2),
+        (0, 5),
+        (0, -5),
+        (9, 3),
+        (-9, 3),
+        (9, -3),
+        (-9, -3),
+        (1, 1),
+        (-1, 1),
+        (1, -1),
+        (-1, -1),
+        (10, 3),
+        (-10, 3),
+        (10, -3),
+        (-10, -3),
+        (100, 7),
+        (-100, 7),
+        (100, -7),
+        (-100, -7),
+    ],
+)
+def test_mod_parametrized(a: int, b: int) -> None:
+    """BalancedTernary(a) % BalancedTernary(b) matches a % b."""
+    result = BalancedTernary.from_int(a) % BalancedTernary.from_int(b)
+    assert result.to_int() == a % b
+
+
+@pytest.mark.parametrize(
+    "a,b",
+    [
+        (7, 2),
+        (7, -2),
+        (-7, 2),
+        (-7, -2),
+        (9, 3),
+        (-9, 3),
+        (10, 3),
+        (-10, 3),
+        (100, 7),
+        (-100, 7),
+    ],
+)
+def test_divmod_identity(a: int, b: int) -> None:
+    """a == (a // b) * b + (a % b) holds on BalancedTernary objects."""
+    ba = BalancedTernary.from_int(a)
+    bb = BalancedTernary.from_int(b)
+    q, r = divmod(ba, bb)
+    assert (q * bb + r).to_int() == a
+
+
+def test_floordiv_zero_raises() -> None:
+    """Division by zero raises ZeroDivisionError."""
+    with pytest.raises(ZeroDivisionError, match="division by zero"):
+        BalancedTernary.from_int(5) // BalancedTernary.from_int(0)
+
+
+def test_mod_zero_raises() -> None:
+    """Modulo by zero raises ZeroDivisionError."""
+    with pytest.raises(ZeroDivisionError, match="division by zero"):
+        BalancedTernary.from_int(5) % BalancedTernary.from_int(0)
+
+
+def test_divmod_zero_raises() -> None:
+    """divmod by zero raises ZeroDivisionError."""
+    with pytest.raises(ZeroDivisionError, match="division by zero"):
+        divmod(BalancedTernary.from_int(5), BalancedTernary.from_int(0))
+
+
+def test_floordiv_non_bt_returns_not_implemented() -> None:
+    """__floordiv__ with non-BalancedTernary returns NotImplemented."""
+    bt = BalancedTernary.from_int(5)
+    assert bt.__floordiv__(2) is NotImplemented
+
+
+def test_mod_non_bt_returns_not_implemented() -> None:
+    """__mod__ with non-BalancedTernary returns NotImplemented."""
+    bt = BalancedTernary.from_int(5)
+    assert bt.__mod__(2) is NotImplemented
+
+
+def test_divmod_non_bt_returns_not_implemented() -> None:
+    """__divmod__ with non-BalancedTernary returns NotImplemented."""
+    bt = BalancedTernary.from_int(5)
+    assert bt.__divmod__(2) is NotImplemented
+
+
+def test_remainder_sign_convention_positive_divisor() -> None:
+    """Remainder has sign of divisor when divisor is positive (Python floored)."""
+    for a in [-7, -6, -1, 0, 1, 6, 7]:
+        r = (BalancedTernary.from_int(a) % BalancedTernary.from_int(3)).to_int()
+        assert 0 <= r < 3, f"remainder {r} out of range for a={a}, b=3"
+
+
+def test_remainder_sign_convention_negative_divisor() -> None:
+    """Remainder has sign of divisor when divisor is negative (Python floored)."""
+    for a in [-7, -6, -1, 0, 1, 6, 7]:
+        r = (BalancedTernary.from_int(a) % BalancedTernary.from_int(-3)).to_int()
+        assert -3 < r <= 0, f"remainder {r} out of range for a={a}, b=-3"
+
+
+@given(
+    a=_ints,
+    b=st.integers(min_value=-500, max_value=500).filter(lambda x: x != 0),
+)
+@settings(max_examples=500)
+def test_floordiv_oracle(a: int, b: int) -> None:
+    """BalancedTernary floordiv matches int floordiv."""
+    result = (BalancedTernary.from_int(a) // BalancedTernary.from_int(b)).to_int()
+    assert result == a // b
+
+
+@given(
+    a=_ints,
+    b=st.integers(min_value=-500, max_value=500).filter(lambda x: x != 0),
+)
+@settings(max_examples=500)
+def test_mod_oracle(a: int, b: int) -> None:
+    """BalancedTernary mod matches int mod."""
+    assert (BalancedTernary.from_int(a) % BalancedTernary.from_int(b)).to_int() == a % b
+
+
+@given(
+    a=_ints,
+    b=st.integers(min_value=-500, max_value=500).filter(lambda x: x != 0),
+)
+@settings(max_examples=500)
+def test_divmod_identity_hypothesis(a: int, b: int) -> None:
+    """a == (a // b) * b + (a % b) holds for all nonzero b."""
+    ba = BalancedTernary.from_int(a)
+    bb = BalancedTernary.from_int(b)
+    q, r = divmod(ba, bb)
+    assert (q * bb + r).to_int() == a

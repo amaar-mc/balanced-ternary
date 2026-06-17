@@ -5,6 +5,23 @@ All notable changes to balanced-ternary are documented here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0] - 2026-06-17
+
+### Added
+
+- Total ordering: `__lt__`, `__le__`, `__gt__`, `__ge__` compare by integer value.
+  Consistent with `__eq__` and `__hash__`; `BalancedTernary` instances are sortable
+  with `sorted()` and usable in `min()`/`max()`.
+- Floored integer division: `__floordiv__` (`//`) and `__mod__` (`%`) implement
+  Python's floored division semantics -- the remainder always has the same sign as
+  the divisor. `__divmod__` returns `(quotient, remainder)` as a tuple of
+  `BalancedTernary` values. All three raise `ZeroDivisionError` on a zero divisor.
+- `__truediv__` is intentionally omitted. `BalancedTernary` is an exact integer type;
+  true division would produce non-integer results for most operand pairs, breaking the
+  exact-arithmetic contract. Use `//` for integer quotients.
+- PyPI publish is queued behind the new-project rate limit; dist artifacts build and
+  pass twine check cleanly.
+
 ## [0.1.0] - 2026-06-17
 
 ### Added

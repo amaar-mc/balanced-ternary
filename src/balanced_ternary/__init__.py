@@ -19,4 +19,4 @@ Example:
 from balanced_ternary._core import BalancedTernary
 
 __all__ = ["BalancedTernary"]
-__version__ = "0.1.0"
+__version__ = "0.2.0"

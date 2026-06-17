@@ -316,6 +316,145 @@ class BalancedTernary:
         """
         return hash(tuple(self._digits))
 
+    def __lt__(self, other: object) -> bool:
+        """Return True if self < other by integer value.
+
+        Args:
+            other: Another BalancedTernary instance.
+
+        Returns:
+            True if self.to_int() < other.to_int().
+
+        Raises:
+            TypeError: If other is not a BalancedTernary.
+        """
+        if not isinstance(other, BalancedTernary):
+            return NotImplemented
+        return self.to_int() < other.to_int()
+
+    def __le__(self, other: object) -> bool:
+        """Return True if self <= other by integer value.
+
+        Args:
+            other: Another BalancedTernary instance.
+
+        Returns:
+            True if self.to_int() <= other.to_int().
+
+        Raises:
+            TypeError: If other is not a BalancedTernary.
+        """
+        if not isinstance(other, BalancedTernary):
+            return NotImplemented
+        return self.to_int() <= other.to_int()
+
+    def __gt__(self, other: object) -> bool:
+        """Return True if self > other by integer value.
+
+        Args:
+            other: Another BalancedTernary instance.
+
+        Returns:
+            True if self.to_int() > other.to_int().
+
+        Raises:
+            TypeError: If other is not a BalancedTernary.
+        """
+        if not isinstance(other, BalancedTernary):
+            return NotImplemented
+        return self.to_int() > other.to_int()
+
+    def __ge__(self, other: object) -> bool:
+        """Return True if self >= other by integer value.
+
+        Args:
+            other: Another BalancedTernary instance.
+
+        Returns:
+            True if self.to_int() >= other.to_int().
+
+        Raises:
+            TypeError: If other is not a BalancedTernary.
+        """
+        if not isinstance(other, BalancedTernary):
+            return NotImplemented
+        return self.to_int() >= other.to_int()
+
+    def __floordiv__(self, other: object) -> BalancedTernary:
+        """Return self // other using Python floored division semantics.
+
+        The result is the floor of self / other: the largest integer n such that
+        n * other <= self. The remainder has the same sign as the divisor (Python
+        convention). Division by zero raises ZeroDivisionError.
+
+        Note: __truediv__ is intentionally omitted because BalancedTernary is an
+        exact integer type and true division would require a non-integer result for
+        most operand pairs, breaking the exact-arithmetic contract.
+
+        Args:
+            other: Another BalancedTernary instance.
+
+        Returns:
+            The floored quotient as a new BalancedTernary.
+
+        Raises:
+            TypeError: If other is not a BalancedTernary.
+            ZeroDivisionError: If other is zero.
+        """
+        if not isinstance(other, BalancedTernary):
+            return NotImplemented
+        divisor = other.to_int()
+        if divisor == 0:
+            raise ZeroDivisionError("balanced ternary division by zero")
+        return BalancedTernary.from_int(self.to_int() // divisor)
+
+    def __mod__(self, other: object) -> BalancedTernary:
+        """Return self % other using Python floored division semantics.
+
+        The remainder r satisfies: self == (self // other) * other + r and r has
+        the same sign as other (Python's floored modulo convention).
+
+        Args:
+            other: Another BalancedTernary instance.
+
+        Returns:
+            The remainder as a new BalancedTernary.
+
+        Raises:
+            TypeError: If other is not a BalancedTernary.
+            ZeroDivisionError: If other is zero.
+        """
+        if not isinstance(other, BalancedTernary):
+            return NotImplemented
+        divisor = other.to_int()
+        if divisor == 0:
+            raise ZeroDivisionError("balanced ternary division by zero")
+        return BalancedTernary.from_int(self.to_int() % divisor)
+
+    def __divmod__(self, other: object) -> tuple[BalancedTernary, BalancedTernary]:
+        """Return (self // other, self % other) as a tuple.
+
+        Equivalent to (self.__floordiv__(other), self.__mod__(other)) but computed
+        in a single call. Follows Python floored division semantics throughout.
+
+        Args:
+            other: Another BalancedTernary instance.
+
+        Returns:
+            Tuple (quotient, remainder) as BalancedTernary values.
+
+        Raises:
+            TypeError: If other is not a BalancedTernary.
+            ZeroDivisionError: If other is zero.
+        """
+        if not isinstance(other, BalancedTernary):
+            return NotImplemented
+        divisor = other.to_int()
+        if divisor == 0:
+            raise ZeroDivisionError("balanced ternary division by zero")
+        q, r = divmod(self.to_int(), divisor)
+        return BalancedTernary.from_int(q), BalancedTernary.from_int(r)
+
     def __repr__(self) -> str:
         """Return an unambiguous representation.
 
