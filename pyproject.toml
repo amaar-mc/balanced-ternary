@@ -1,0 +1,64 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "balanced-ternary"
+version = "0.1.0"
+description = "Balanced ternary number type for Python: T-notation, conversions, and full digit-level arithmetic (digits -1, 0, 1)."
+readme = "README.md"
+license = { file = "LICENSE" }
+authors = [{ name = "Amaar Chughtai", email = "amaardevx@gmail.com" }]
+requires-python = ">=3.10"
+keywords = [
+    "balanced-ternary",
+    "ternary",
+    "number-systems",
+    "arithmetic",
+    "mathematics",
+    "numeral-systems",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "hypothesis>=6.0", "ruff>=0.4.0", "mypy>=1.0"]
+
+[project.urls]
+Homepage = "https://github.com/amaar-mc/balanced-ternary"
+Repository = "https://github.com/amaar-mc/balanced-ternary"
+"Bug Tracker" = "https://github.com/amaar-mc/balanced-ternary/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/balanced_ternary"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+mypy_path = "src"
+
+[tool.ruff]
+line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM", "ANN"]
