@@ -1,5 +1,9 @@
 # balanced-ternary
 
+<p align="center">
+  <img src="assets/logo.png" alt="balanced-ternary logo" width="160">
+</p>
+
 A pure-Python implementation of balanced ternary arithmetic. The `BalancedTernary`
 type uses digits from the set {-1, 0, 1}, writes -1 as `T` in T-notation, and
 implements addition and multiplication at the digit level with balanced-ternary
