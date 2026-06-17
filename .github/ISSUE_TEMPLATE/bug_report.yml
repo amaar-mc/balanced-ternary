@@ -1,0 +1,44 @@
+name: Bug Report
+description: Report a bug or incorrect arithmetic result
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill in the details below.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: What happened? What did you expect?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Minimal code that demonstrates the problem.
+      placeholder: |
+        from balanced_ternary import BalancedTernary
+        bt = BalancedTernary.from_int(5)
+        print(bt.to_str())  # unexpected output
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: balanced-ternary version
+      placeholder: "0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: "3.11"
+    validations:
+      required: true
